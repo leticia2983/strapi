@@ -1,9 +1,9 @@
-#name: Dockerize Strapi Project
-#
-#on:
-#  push:
-#    branches:
-#      - main
+name: Dockerize Strapi Project
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
