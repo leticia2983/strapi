@@ -19,7 +19,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
-
         run: |
           docker build -t mystrapiapp .
           docker tag mystrapiapp leticia888444/mystrapiapp:1.0
