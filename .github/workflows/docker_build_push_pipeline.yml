@@ -1,9 +1,9 @@
-name: Dockerize Strapi Project
-
-on:
-  push:
-    branches:
-      - main
+#name: Dockerize Strapi Project
+#
+#on:
+#  push:
+#    branches:
+#      - main
 
 jobs:
   build:
@@ -39,4 +39,4 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            docker-compose -f docker-compose.yml up -d
+            sudo docker-compose -f docker-compose.yml up -d
