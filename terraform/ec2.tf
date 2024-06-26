@@ -22,8 +22,8 @@ resource "aws_security_group" "strapi-sg-let" {
   }
   ingress {
 
-    from_port   = "5432"
-    to_port     = "5432"
+    from_port   = "3306"
+    to_port     = "3306"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
