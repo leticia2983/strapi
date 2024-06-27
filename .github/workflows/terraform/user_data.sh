@@ -28,6 +28,16 @@ sudo chown -R ubuntu:ubuntu /home/ubuntu/strapi
 sudo chmod -R 755 /home/ubuntu/strapi
 cd strapi
 
+cat <<EOT > .env
+HOST=mysql
+PORT=1337
+APP_KEYS="toBeModified1,toBeModified2"
+API_TOKEN_SALT=tobemodified
+ADMIN_JWT_SECRET=tobemodified
+TRANSFER_TOKEN_SALT=tobemodified
+JWT_SECRET=tobemodified
+EOT
+
 sudo  docker compose up -d
 
 sleep 2000
