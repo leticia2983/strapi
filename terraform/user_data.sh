@@ -1,48 +1,42 @@
 #!/bin/bash
-sudo su ubuntu
-sudo apt-get purge docker-ce docker-ce-cli containerd.io
-sudo rm -rf /var/lib/docker
-sudo rm -rf /var/lib/containerd
 
-sudo apt-get update
-sudo apt-get install \
-  ca-certificates \
-  curl \
-  gnupg \
-  lsb-release
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+sudo -u ubuntu
 
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Update and install Docker and Docker Compose
+sudo apt update && sudo apt install docker.io docker-compose -y
 
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+# Enable Docker to start on boot and add current user to docker group
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
 
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+# Clone Strapi repository into ubuntu user's home directory
+sudo git clone https://github.com/leticia2983/strapi.git /home/ubuntu/strapi
 
-git clone https://github.com/leticia2983/strapi.git
+# Change ownership and permissions of strapi directory
 sudo chown -R ubuntu:ubuntu /home/ubuntu/strapi
 sudo chmod -R 755 /home/ubuntu/strapi
-cd strapi
+cd /home/ubuntu/strapi  # Move into the strapi directory
 
-sudo  docker compose up -d
+# Create .env file for Strapi environment variables
+cat <<EOT > .env
+HOST=mysql
+PORT=1337
+APP_KEYS=juBiRyxZeo0bOrsaZmM/7g==,9R4d2+jiutM9CmBzx+NGCw==,1XAOCxs2GOWM/vn+Ov72mQ==,jL8tyWbMmqTJ6aAcRIR+PA==
+API_TOKEN_SALT=vcz1aqBIwV62viRza/9AiQ==
+ADMIN_JWT_SECRET=dZ4G47Sx2ml+YKvtiC5GHw==
+TRANSFER_TOKEN_SALT=hYPzxzEYk5kZKppLStl4nA==
+DATABASE_CLIENT=mysql
+DATABASE_FILENAME=.tmp/data.db
+JWT_SECRET=bby5g2LB/5NJKopXw9P5Gw==
 
-sleep 2000
+DATABASE_CLIENT=mysql
+DATABASE_HOST=mysql
+DATABASE_PORT=3306
+DATABASE_NAME=strapi
+DATABASE_USERNAME=root
+DATABASE_PASSWORD=password
+EOT
 
-sudo docker-compose restart strapi
-
-
-
-
-
-#sudo apt update && sudo apt install docker.io docker-compose -y
-#sudo systemctl enable docker && sudo usermod -aG docker $USER
-#git clone https://github.com/leticia2983/strapi.git
-#sudo chown -R ubuntu:ubuntu /home/ubuntu/strapi
-#sudo chmod -R 755 /home/ubuntu/strapi
-#cd strapi
-##sudo docker run -d -p 1337:1337 leticia888444/leticia_strapi:1.0.
-#sleep 2000
+# Start Docker containers defined in docker-compose.yml
+sudo -u ubuntu docker-compose up -d

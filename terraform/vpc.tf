@@ -1,5 +1,5 @@
 resource "aws_vpc" "strapi_vpc" {
-  cidr_block = "172.18.0.0/16"
+  cidr_block = "172.21.0.0/16"
   tags = {
     name = "vpc-strapi_let"
   }
@@ -7,7 +7,7 @@ resource "aws_vpc" "strapi_vpc" {
 
 resource "aws_subnet" "public_subnet1" {
   vpc_id            = aws_vpc.strapi_vpc.id
-  cidr_block        = "172.18.1.0/24"
+  cidr_block        = "172.21.1.0/24"
   availability_zone = "ap-south-1a"
 }
 
