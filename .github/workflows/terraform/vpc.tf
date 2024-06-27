@@ -1,5 +1,5 @@
 resource "aws_vpc" "strapi_vpc" {
-  cidr_block = "172.18.0.0/16"
+  cidr_block = "172.21.0.0/16"
   tags = {
     name = "vpc-strapi_let"
   }

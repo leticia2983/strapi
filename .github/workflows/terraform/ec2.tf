@@ -38,19 +38,21 @@ resource "aws_security_group" "strapi-sg-let" {
 
 resource "aws_instance" "strapi-ec2-let" {
   ami                         = var.ami
-  instance_type               = "t2.micro"
+  instance_type               = "t2.small"
   vpc_security_group_ids      = [aws_security_group.strapi-sg-let.id]
   subnet_id                   = aws_subnet.public_subnet1.id
   key_name                    = var.keyname
   associate_public_ip_address = true
   user_data = <<-EOF
               #!/bin/bash
+              set -e  # Exit script on any error
+              exec > >(tee /var/log/user_data.log|logger -t user_data -s 2>/dev/console) 2>&1
               sudo apt update && sudo apt install docker.io docker-compose -y
               sudo systemctl enable docker && sudo usermod -aG docker $USER
               git clone https://github.com/leticia2983/strapi.git
               cd strapi
               docker-compose up -d
-              sleep 2000
+              sleep 10
               EOF
 
   tags = {
