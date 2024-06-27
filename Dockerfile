@@ -1,22 +1,27 @@
-FROM node:18
+# Use a smaller base image
+FROM node:18-alpine
 
-ENV PORT 1337
-ENV HOST 0.0.0.0
-ENV NODE_ENV production
+# Install necessary system dependencies
+RUN apk update && \
+    apk add --no-cache git
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Set the working directory
+WORKDIR /root/strapi
 
-# Install app dependencies
-COPY package*.json /usr/src/app/
-COPY yarn.lock /usr/src/app/
-RUN yarn install
+# Copy package.json and yarn.lock
+COPY package.json yarn.lock ./
 
-# Bundle app source
-COPY . /usr/src/app
+# Install dependencies
+RUN yarn install --production
 
-RUN yarn build
+# Install pm2 globally
+RUN yarn global add pm2
+
+# Copy the rest of the application
+COPY . .
+
+# Expose port 1337
 EXPOSE 1337
 
-CMD [ "yarn", "start" ]
+# Start the application using pm2-runtime
+CMD ["pm2-runtime", "start", "npm", "--", "run", "start"]
