@@ -7,5 +7,5 @@ variable "ami" {
 }
 
 variable "keyname" {
-  default = "my_aws_login"
+  default = "leticiauswest"
 }
